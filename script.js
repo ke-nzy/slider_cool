@@ -5,26 +5,18 @@ let listHTML = document.querySelector('.carousel .list');
 let seeMoreButtons = document.querySelectorAll('.seeMore');
 let backButton = document.getElementById('back');
 
-let timeAutoNext = 5000;
-
-nextButton.onclick = function(){
-    showSlider('next');
-}
-prevButton.onclick = function(){
-    showSlider('prev');
-}
-
+let timeAutoNext = 5000; // 5 seconds
 let runNextAuto;
-const startAutoTransition = () => {
-    runNextAuto = setTimeout(() => {
-        if (!carousel.classList.contains('showDetail')) { // Check if not in detail view
-            nextButton.click();
-        }
-        startAutoTransition(); // Restart the auto transition
-    }, timeAutoNext);
-}
+let unAcceppClick; // Unaccepted click timeout
 
-startAutoTransition(); // Start the auto transition
+const startAutoTransition = () => {
+    if (!carousel.classList.contains('showDetail')) { // Check if not in detail view
+        clearTimeout(runNextAuto);
+        runNextAuto = setTimeout(() => {
+            nextButton.click();
+        }, timeAutoNext);
+    }
+};
 
 const showSlider = (type) => {
     nextButton.style.pointerEvents = 'none';
@@ -35,26 +27,42 @@ const showSlider = (type) => {
     if(type === 'next'){
         listHTML.appendChild(items[0]);
         carousel.classList.add('next');
-    }else{
+    } else {
         listHTML.prepend(items[items.length - 1]);
         carousel.classList.add('prev');
     }
-    clearTimeout(runNextAuto); // Clear the previous timeout
-    startAutoTransition(); // Restart the auto transition
 
-    setTimeout(() => {
+    clearTimeout(unAcceppClick);
+    unAcceppClick = setTimeout(() => {
         nextButton.style.pointerEvents = 'auto';
         prevButton.style.pointerEvents = 'auto';
     }, 2000);
-}
+
+    startAutoTransition(); // Reset the timer
+};
+
+nextButton.onclick = function() {
+    showSlider('next');
+    startAutoTransition(); // Reset the timer
+};
+
+prevButton.onclick = function() {
+    showSlider('prev');
+    startAutoTransition(); // Reset the timer
+};
 
 seeMoreButtons.forEach((button) => {
     button.onclick = function(){
         carousel.classList.remove('next', 'prev');
         carousel.classList.add('showDetail');
+        clearTimeout(runNextAuto); // Stop auto transition when showing details
     }
 });
 
 backButton.onclick = function(){
     carousel.classList.remove('showDetail');
-}
+    startAutoTransition(); // Restart auto transition when going back to homepage
+};
+
+// Initialize the auto transition on page load
+startAutoTransition();
