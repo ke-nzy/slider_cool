@@ -14,11 +14,18 @@ prevButton.onclick = function(){
     showSlider('prev');
 }
 
-let runNextAuto = setTimeout(() => {
-    next.click();
-  }, timeAutoNext);
+let runNextAuto;
+const startAutoTransition = () => {
+    runNextAuto = setTimeout(() => {
+        if (!carousel.classList.contains('showDetail')) { // Check if not in detail view
+            nextButton.click();
+        }
+        startAutoTransition(); // Restart the auto transition
+    }, timeAutoNext);
+}
 
-let unAcceppClick;
+startAutoTransition(); // Start the auto transition
+
 const showSlider = (type) => {
     nextButton.style.pointerEvents = 'none';
     prevButton.style.pointerEvents = 'none';
@@ -32,23 +39,22 @@ const showSlider = (type) => {
         listHTML.prepend(items[items.length - 1]);
         carousel.classList.add('prev');
     }
-    clearTimeout(unAcceppClick);
-    unAcceppClick = setTimeout(()=>{
+    clearTimeout(runNextAuto); // Clear the previous timeout
+    startAutoTransition(); // Restart the auto transition
+
+    setTimeout(() => {
         nextButton.style.pointerEvents = 'auto';
         prevButton.style.pointerEvents = 'auto';
     }, 2000);
-
-    clearTimeout(runNextAuto);
-  runNextAuto = setTimeout(() => {
-    next.click();
-  }, timeAutoNext);
 }
+
 seeMoreButtons.forEach((button) => {
     button.onclick = function(){
         carousel.classList.remove('next', 'prev');
         carousel.classList.add('showDetail');
     }
 });
+
 backButton.onclick = function(){
     carousel.classList.remove('showDetail');
 }

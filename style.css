@@ -89,6 +89,7 @@ header nav a {
   height: 100vh;
   overflow: hidden;
   margin-top: -50px;
+  perspective: 1000px;
 }
 
 .carousel .list {
@@ -108,6 +109,7 @@ header nav a {
   height: 100%;
   font-size: 15px;
   transition: left 0.5s, opacity 0.5s, width 0.5s, background-color 0.5s;
+  /* transform-style: preserve-3d; */
   /* background-color: var(--inactive-item-bg); */
 }
 
