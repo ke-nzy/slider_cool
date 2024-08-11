@@ -5,12 +5,19 @@ let listHTML = document.querySelector('.carousel .list');
 let seeMoreButtons = document.querySelectorAll('.seeMore');
 let backButton = document.getElementById('back');
 
+let timeAutoNext = 5000;
+
 nextButton.onclick = function(){
     showSlider('next');
 }
 prevButton.onclick = function(){
     showSlider('prev');
 }
+
+let runNextAuto = setTimeout(() => {
+    next.click();
+  }, timeAutoNext);
+
 let unAcceppClick;
 const showSlider = (type) => {
     nextButton.style.pointerEvents = 'none';
@@ -29,7 +36,12 @@ const showSlider = (type) => {
     unAcceppClick = setTimeout(()=>{
         nextButton.style.pointerEvents = 'auto';
         prevButton.style.pointerEvents = 'auto';
-    }, 2000)
+    }, 2000);
+
+    clearTimeout(runNextAuto);
+  runNextAuto = setTimeout(() => {
+    next.click();
+  }, timeAutoNext);
 }
 seeMoreButtons.forEach((button) => {
     button.onclick = function(){
